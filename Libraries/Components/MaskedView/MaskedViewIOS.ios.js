@@ -1,10 +1,8 @@
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @providesModule MaskedViewIOS
  * @flow
@@ -25,7 +23,7 @@ type Props = ViewProps & {
    * Should be a React element to be rendered and applied as the
    * mask for the child element.
    */
-  maskElement: React.Element<*>,
+  maskElement: React.Element<any>,
 };
 
 /**
@@ -33,12 +31,12 @@ type Props = ViewProps & {
  *
  * ```
  * import React from 'react';
- * import { MaskedView, Text, View } from 'react-native';
+ * import { MaskedViewIOS, Text, View } from 'react-native';
  *
  * class MyMaskedView extends React.Component {
  *   render() {
  *     return (
- *       <MaskedView
+ *       <MaskedViewIOS
  *         style={{ flex: 1 }}
  *         maskElement={
  *           <View style={styles.maskContainerStyle}>
@@ -49,7 +47,7 @@ type Props = ViewProps & {
  *         }
  *       >
  *         <View style={{ flex: 1, backgroundColor: 'blue' }} />
- *       </MaskedView>
+ *       </MaskedViewIOS>
  *     );
  *   }
  * }
@@ -64,9 +62,7 @@ type Props = ViewProps & {
  * transparent pixels block that content.
  *
  */
-class MaskedViewIOS extends React.Component {
-  props: Props;
-
+class MaskedViewIOS extends React.Component<Props> {
   static propTypes = {
     ...ViewPropTypes,
     maskElement: PropTypes.element.isRequired,

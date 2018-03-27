@@ -1,10 +1,8 @@
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  * @providesModule RNTesterList
@@ -46,6 +44,11 @@ const ComponentExamples: Array<RNTesterExample> = [
   {
     key: 'ImageExample',
     module: require('./ImageExample'),
+    supportsTVOS: true,
+  },
+  {
+    key: 'InputAccessoryViewExample',
+    module: require('./InputAccessoryViewExample'),
     supportsTVOS: true,
   },
   {
@@ -94,6 +97,11 @@ const ComponentExamples: Array<RNTesterExample> = [
     supportsTVOS: false,
   },
   {
+    key: 'NavigatorIOSBarStyleExample',
+    module: require('./NavigatorIOSBarStyleExample'),
+    supportsTVOS: false,
+  },
+  {
     key: 'NavigatorIOSExample',
     module: require('./NavigatorIOSExample'),
     supportsTVOS: true,
@@ -117,6 +125,11 @@ const ComponentExamples: Array<RNTesterExample> = [
     key: 'RefreshControlExample',
     module: require('./RefreshControlExample'),
     supportsTVOS: false,
+  },
+  {
+    key: 'SafeAreaViewExample',
+    module: require('./SafeAreaViewExample'),
+    supportsTVOS: true,
   },
   {
     key: 'ScrollViewExample',
@@ -144,6 +157,11 @@ const ComponentExamples: Array<RNTesterExample> = [
     supportsTVOS: false,
   },
   {
+    key: 'SwipeableFlatListExample',
+    module: require('./SwipeableFlatListExample'),
+    supportsTVOS: false,
+  },
+  {
     key: 'SwipeableListViewExample',
     module: require('./SwipeableListViewExample'),
     supportsTVOS: false,
@@ -159,6 +177,11 @@ const ComponentExamples: Array<RNTesterExample> = [
     supportsTVOS: true,
   },
   {
+    key: 'TabBarIOSBarStyleExample',
+    module: require('./TabBarIOSBarStyleExample'),
+    supportsTVOS: false,
+  },
+  {
     key: 'TextExample',
     module: require('./TextExample.ios'),
     supportsTVOS: true,
@@ -171,7 +194,7 @@ const ComponentExamples: Array<RNTesterExample> = [
   {
     key: 'TouchableExample',
     module: require('./TouchableExample'),
-    supportsTVOS: false,
+    supportsTVOS: true,
   },
   {
     key: 'TransparentHitTestExample',
@@ -250,6 +273,11 @@ const APIExamples: Array<RNTesterExample> = [
     key: 'ClipboardExample',
     module: require('./ClipboardExample'),
     supportsTVOS: false,
+  },
+  {
+    key: 'Dimensions',
+    module: require('./DimensionsExample'),
+    supportsTVOS: true,
   },
   {
     key: 'GeolocationExample',

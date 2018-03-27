@@ -1,10 +1,8 @@
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
 #import "RCTCxxMethod.h"
@@ -66,7 +64,7 @@ using namespace facebook::react;
   CxxModule::Callback second;
 
   if (arguments.count < _method->callbacks) {
-    RCTLogError(@"Method %@.%s expects at least %lu arguments, but got %tu",
+    RCTLogError(@"Method %@.%s expects at least %zu arguments, but got %tu",
                 RCTBridgeModuleNameForClass([module class]), _method->name.c_str(),
                 _method->callbacks, arguments.count);
     return nil;

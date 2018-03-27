@@ -1,10 +1,8 @@
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  * @providesModule MaskedViewExample
@@ -23,7 +21,7 @@ const {
   View,
 } = require('react-native');
 
-class MaskedViewExample extends React.Component {
+class MaskedViewExample extends React.Component<{}, $FlowFixMeState> {
   static title = '<MaskedViewIOS>';
   static description = 'Renders the child view with a mask specified in the `renderMask` prop.';
 

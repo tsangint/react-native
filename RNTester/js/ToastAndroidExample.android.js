@@ -1,10 +1,8 @@
 /**
  * Copyright (c) 2015-present, Facebook, Inc.
- * All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  *
  * @flow
  * @providesModule ToastAndroidExample
@@ -24,7 +22,7 @@ var {
 var RNTesterBlock = require('RNTesterBlock');
 var RNTesterPage = require('RNTesterPage');
 
-class ToastExample extends React.Component {
+class ToastExample extends React.Component<{}, $FlowFixMeState> {
   static title = 'Toast Example';
   static description = 'Example that demonstrates the use of an Android Toast to provide feedback.';
   state = {};
