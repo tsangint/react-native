@@ -1033,7 +1033,7 @@ public class ReactInstanceManager {
     UiThreadUtil.assertOnUiThread();
     if (rootView.isFabric()) {
       catalystInstance.getJSModule(ReactFabric.class)
-        .unmountComponentAtNodeAndRemoveContainer(rootView.getId());
+        .unmountComponentAtNode(rootView.getId());
     } else {
       catalystInstance.getJSModule(AppRegistry.class)
         .unmountApplicationComponentAtRootTag(rootView.getId());
@@ -1070,15 +1070,13 @@ public class ReactInstanceManager {
     ReactMarker.logMarker(CREATE_REACT_CONTEXT_START);
     final ReactApplicationContext reactContext = new ReactApplicationContext(mApplicationContext);
 
-    if (mUseDeveloperSupport) {
-      reactContext.setNativeModuleCallExceptionHandler(mDevSupportManager);
-    }
+    NativeModuleCallExceptionHandler exceptionHandler = mNativeModuleCallExceptionHandler != null
+        ? mNativeModuleCallExceptionHandler
+        : mDevSupportManager;
+    reactContext.setNativeModuleCallExceptionHandler(exceptionHandler);
 
     NativeModuleRegistry nativeModuleRegistry = processPackages(reactContext, mPackages, false);
 
-    NativeModuleCallExceptionHandler exceptionHandler = mNativeModuleCallExceptionHandler != null
-      ? mNativeModuleCallExceptionHandler
-      : mDevSupportManager;
     CatalystInstanceImpl.Builder catalystInstanceBuilder = new CatalystInstanceImpl.Builder()
       .setReactQueueConfigurationSpec(ReactQueueConfigurationSpec.createDefault())
       .setJSExecutor(jsExecutor)
