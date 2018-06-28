@@ -1,4 +1,7 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+// Copyright (c) 2004-present, Facebook, Inc.
+
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
 package com.facebook.react.uimanager;
 
@@ -74,7 +77,7 @@ public class LayoutShadowNode extends ReactShadowNodeImpl {
 
   protected LayoutShadowNode(LayoutShadowNode node) {
     super(node);
-    mTempYogaValue = new MutableYogaValue();
+    mTempYogaValue = new MutableYogaValue(node.mTempYogaValue);
   }
 
   @Override
@@ -527,7 +530,6 @@ public class LayoutShadowNode extends ReactShadowNodeImpl {
     if (isVirtual()) {
       return;
     }
-
     if (overflow == null) {
       setOverflow(YogaOverflow.VISIBLE);
       return;

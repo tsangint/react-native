@@ -81,7 +81,13 @@ public class DevServerHelper {
     void onPackagerReloadCommand();
     void onPackagerDevMenuCommand();
     void onCaptureHeapCommand(final Responder responder);
-    void onPokeSamplingProfilerCommand(final Responder responder);
+
+    // Allow apps to provide listeners for custom packager commands.
+    @Nullable Map<String, RequestHandler> customCommandHandlers();
+  }
+
+  public interface PackagerCustomCommandProvider {
+
   }
 
   public interface SymbolicationListener {
@@ -163,12 +169,10 @@ public class DevServerHelper {
             commandListener.onCaptureHeapCommand(responder);
           }
         });
-        handlers.put("pokeSamplingProfiler", new RequestOnlyHandler() {
-          @Override
-          public void onRequest(@Nullable Object params, Responder responder) {
-            commandListener.onPokeSamplingProfilerCommand(responder);
-          }
-        });
+        Map<String, RequestHandler> customHandlers = commandListener.customCommandHandlers();
+        if (customHandlers != null) {
+          handlers.putAll(customHandlers);
+        }
         handlers.putAll(new FileIoHandler().handlers());
 
         ConnectionCallback onPackagerConnectedCallback =
@@ -375,7 +379,17 @@ public class DevServerHelper {
   public void downloadBundleFromURL(
     DevBundleDownloadListener callback,
     File outputFile, String bundleURL, BundleDownloader.BundleInfo bundleInfo) {
-    mBundleDownloader.downloadBundleFromURL(callback, outputFile, bundleURL, bundleInfo);
+    mBundleDownloader.downloadBundleFromURL(callback, outputFile, bundleURL, bundleInfo, getDeltaClientType());
+  }
+
+  private BundleDeltaClient.ClientType getDeltaClientType() {
+    if (mSettings.isBundleDeltasCppEnabled()) {
+      return BundleDeltaClient.ClientType.NATIVE;
+    } else if (mSettings.isBundleDeltasEnabled()) {
+      return BundleDeltaClient.ClientType.DEV_SUPPORT;
+    } else {
+      return BundleDeltaClient.ClientType.NONE;
+    }
   }
 
   /**
@@ -479,10 +493,11 @@ public class DevServerHelper {
               callback.onPackagerStatusFetched(false);
               return;
             }
-            if (!PACKAGER_OK_STATUS.equals(body.string())) {
+            String bodyString = body.string(); // cannot call body.string() twice, stored it into variable. https://github.com/square/okhttp/issues/1240#issuecomment-68142603
+            if (!PACKAGER_OK_STATUS.equals(bodyString)) {
               FLog.e(
                   ReactConstants.TAG,
-                  "Got unexpected response from packager when requesting status: " + body.string());
+                  "Got unexpected response from packager when requesting status: " + bodyString);
               callback.onPackagerStatusFetched(false);
               return;
             }

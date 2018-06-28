@@ -1,11 +1,14 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+// Copyright (c) 2004-present, Facebook, Inc.
+
+// This source code is licensed under the MIT license found in the
+// LICENSE file in the root directory of this source tree.
 
 #include "Differentiator.h"
 
 namespace facebook {
 namespace react {
 
-void calculateMutationInstructions(
+static void calculateMutationInstructions(
   TreeMutationInstructionList &instructions,
   SharedShadowNode parentNode,
   SharedShadowNodeSharedList oldChildNodes,
@@ -36,6 +39,7 @@ void calculateMutationInstructions(
   TreeMutationInstructionList removeInstructions = {};
   TreeMutationInstructionList replaceInstructions = {};
   TreeMutationInstructionList downwardInstructions = {};
+  TreeMutationInstructionList destructionDownwardInstructions = {};
 
   // Stage 1: Collectings Updates
   for (index = 0; index < oldChildNodes->size() && index < newChildNodes->size(); index++) {
@@ -59,7 +63,7 @@ void calculateMutationInstructions(
     }
 
     calculateMutationInstructions(
-      downwardInstructions,
+      *(newChildNode->getChildren()->size() ? &downwardInstructions : &destructionDownwardInstructions),
       oldChildNode,
       oldChildNode->getChildren(),
       newChildNode->getChildren()
@@ -87,7 +91,7 @@ void calculateMutationInstructions(
       newChildSourceNode ? newChildSourceNode->getChildren() : ShadowNode::emptySharedShadowNodeSharedList();
 
     calculateMutationInstructions(
-      downwardInstructions,
+      *(newChildNode->getChildren()->size() ? &downwardInstructions : &destructionDownwardInstructions),
       newChildNode,
       newChildSourceChildNodes,
       newChildNode->getChildren()
@@ -122,7 +126,7 @@ void calculateMutationInstructions(
       );
 
       calculateMutationInstructions(
-        downwardInstructions,
+        destructionDownwardInstructions,
         oldChildNode,
         oldChildNode->getChildren(),
         ShadowNode::emptySharedShadowNodeSharedList()
@@ -146,12 +150,40 @@ void calculateMutationInstructions(
   }
 
   // All instructions in an optimal order:
+  instructions.insert(instructions.end(), destructionDownwardInstructions.begin(), destructionDownwardInstructions.end());
   instructions.insert(instructions.end(), replaceInstructions.begin(), replaceInstructions.end());
   instructions.insert(instructions.end(), removeInstructions.begin(), removeInstructions.end());
-  instructions.insert(instructions.end(), deleteInstructions.begin(), deleteInstructions.end());
   instructions.insert(instructions.end(), createInstructions.begin(), createInstructions.end());
-  instructions.insert(instructions.end(), insertInstructions.begin(), insertInstructions.end());
   instructions.insert(instructions.end(), downwardInstructions.begin(), downwardInstructions.end());
+  instructions.insert(instructions.end(), insertInstructions.begin(), insertInstructions.end());
+  instructions.insert(instructions.end(), deleteInstructions.begin(), deleteInstructions.end());
+}
+
+void calculateMutationInstructions(
+  TreeMutationInstructionList &instructions,
+  SharedShadowNode oldRootShadowNode,
+  SharedShadowNode newRootShadowNode
+) {
+  // Root shadow nodes must have same tag.
+  assert(oldRootShadowNode->getTag() == newRootShadowNode->getTag());
+
+  if (*oldRootShadowNode != *newRootShadowNode) {
+    instructions.push_back(
+      TreeMutationInstruction::Replace(
+        nullptr,
+        oldRootShadowNode,
+        newRootShadowNode,
+        -1
+      )
+    );
+  }
+
+  calculateMutationInstructions(
+    instructions,
+    oldRootShadowNode,
+    oldRootShadowNode->getChildren(),
+    newRootShadowNode->getChildren()
+  );
 }
 
 } // namespace react

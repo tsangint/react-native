@@ -1,8 +1,9 @@
 /*
- * Copyright (c) 2014-present, Facebook, Inc.
+ *  Copyright (c) 2014-present, Facebook, Inc.
  *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
+ *  This source code is licensed under the MIT license found in the LICENSE
+ *  file in the root directory of this source tree.
+ *
  */
 
 package com.facebook.yoga;
@@ -185,6 +186,11 @@ public class YogaNode implements Cloneable {
       clonedYogaNode.mOwner = null;
       clonedYogaNode.mChildren =
           mChildren != null ? (List<YogaNode>) ((ArrayList) mChildren).clone() : null;
+      if (clonedYogaNode.mChildren != null) {
+        for (YogaNode child : clonedYogaNode.mChildren) {
+          child.mOwner = null;
+        }
+      }
       return clonedYogaNode;
     } catch (CloneNotSupportedException ex) {
       // This class implements Cloneable, this should not happen
@@ -234,15 +240,14 @@ public class YogaNode implements Cloneable {
    * {@link YogaNode} is shared between two or more YogaTrees.
    */
   @Nullable
-  public
-  YogaNode getOwner() {
+  public YogaNode getOwner() {
     return mOwner;
   }
 
   /** @deprecated Use #getOwner() instead. This will be removed in the next version. */
   @Deprecated
   @Nullable
-  YogaNode getParent() {
+  public YogaNode getParent() {
     return getOwner();
   }
 

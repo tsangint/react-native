@@ -4,7 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- * @flow
+ * @format
+ * @flow strict
  */
 
 'use strict';
@@ -16,7 +17,7 @@ export type PlatformSelectSpec<A, I> = {|
 
 const PlatformOS = {
   OS: 'ios',
-  select: <A, I> (spec: PlatformSelectSpec<A, I>): A | I => spec.ios,
+  select: <A, I>(spec: PlatformSelectSpec<A, I>): A | I => spec.ios,
 };
 
 module.exports = PlatformOS;

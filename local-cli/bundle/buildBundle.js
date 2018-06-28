@@ -4,6 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
+ * @format
  * @flow
  */
 
@@ -74,7 +75,6 @@ async function buildBundle(
       : defaultProvidesModuleNodeModules;
 
   const terminal = new Terminal(process.stdout);
-
   const server = new Server({
     asyncRequireModulePath: config.getAsyncRequireModulePath(),
     assetExts: defaultAssetExts.concat(assetExts),
@@ -87,6 +87,7 @@ async function buildBundle(
     extraNodeModules: config.extraNodeModules,
     getModulesRunBeforeMainModule: config.getModulesRunBeforeMainModule,
     getPolyfills: config.getPolyfills,
+    getResolverMainFields: config.getResolverMainFields,
     getRunModuleStatement: config.getRunModuleStatement,
     getTransformOptions: config.getTransformOptions,
     hasteImplModulePath: config.hasteImplModulePath,
@@ -94,7 +95,7 @@ async function buildBundle(
     platforms: defaultPlatforms.concat(platforms),
     postMinifyProcess: config.postMinifyProcess,
     postProcessBundleSourcemap: config.postProcessBundleSourcemap,
-    projectRoots: config.getProjectRoots(),
+    projectRoot: config.getProjectRoot(),
     providesModuleNodeModules: providesModuleNodeModules,
     reporter: new TerminalReporter(terminal),
     resetCache: args.resetCache,
@@ -102,6 +103,7 @@ async function buildBundle(
     sourceExts: sourceExts.concat(defaultSourceExts),
     transformModulePath: transformModulePath,
     watch: false,
+    watchFolders: config.getWatchFolders(),
     workerPath: config.getWorkerPath && config.getWorkerPath(),
   });
 
@@ -117,11 +119,7 @@ async function buildBundle(
   });
 
   // When we're done saving bundle output and the assets, we're done.
-  const assets = await saveAssets(
-    outputAssets,
-    args.platform,
-    args.assetsDest,
-  );
+  const assets = await saveAssets(outputAssets, args.platform, args.assetsDest);
 
   server.end();
 
