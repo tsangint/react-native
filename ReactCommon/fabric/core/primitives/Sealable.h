@@ -31,18 +31,35 @@ namespace react {
  *
  * How to use:
  *   1. Inherit your class from `Sealable`.
- *   2. Call `ensureUnsealed()` from all non-const methods.
+ *   2. Call `ensureUnsealed()` in all cases where the object might be mutated:
+ *      a. At the beginning of all *always* mutating `non-const` methods;
+ *      b. Right before the place where actual mutation happens in all *possible*
+ *         mutating `non-const` methods;
+ *      c. Right after performing `const_cast`. (Optionally. This is not strictly
+ *         necessary but might help detect problems earlier.)
  *   3. Call `seal()` at some point from which any modifications
  *      must be prevented.
  */
+
+#ifdef NDEBUG
+
+class Sealable {
+public:
+  inline void seal() const {}
+  inline bool getSealed() const { return true; }
+  inline void ensureUnsealed() const {}
+};
+
+#else
+
 class Sealable {
 public:
   Sealable();
-  Sealable(const Sealable& other);
-  Sealable(Sealable&& other) noexcept;
+  Sealable(const Sealable &other);
+  Sealable(Sealable &&other) noexcept;
   ~Sealable() noexcept;
-  Sealable& operator=(const Sealable& other);
-  Sealable& operator=(Sealable&& other) noexcept;
+  Sealable &operator=(const Sealable &other);
+  Sealable &operator=(Sealable &&other) noexcept;
 
   /*
    * Seals the object. This operation is irreversible;
@@ -55,7 +72,6 @@ public:
    */
   bool getSealed() const;
 
-protected:
   /*
    * Throws an exception if the object is sealed.
    * Call this from all non-`const` methods.
@@ -65,6 +81,8 @@ protected:
 private:
   mutable std::atomic<bool> sealed_ {false};
 };
+
+#endif
 
 } // namespace react
 } // namespace facebook

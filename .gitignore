@@ -67,4 +67,13 @@ package-lock.json
 /coverage
 /third-party
 
+<<<<<<< HEAD
 /RNTester-Zeng
+=======
+# Root dir shouldn't have Xcode project
+/*.xcodeproj
+
+# ReactCommon subdir shouldn't have Xcode project
+/ReactCommon/**/*.xcodeproj
+RNTester/build
+>>>>>>> 476a831ea09c25d0bbcb97a536c5bef76a1c8273

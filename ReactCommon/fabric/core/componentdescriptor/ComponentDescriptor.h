@@ -45,19 +45,15 @@ public:
    * Creates a new `ShadowNode` of a particular type.
    */
   virtual SharedShadowNode createShadowNode(
-    const Tag &tag,
-    const Tag &rootTag,
-    const InstanceHandle &instanceHandle,
-    const RawProps &rawProps
+    const ShadowNodeFragment &fragment
   ) const = 0;
 
   /*
    * Clones a `ShadowNode` with optionally new `props` and/or `children`.
    */
-  virtual SharedShadowNode cloneShadowNode(
-    const SharedShadowNode &shadowNode,
-    const SharedRawProps &rawProps = nullptr,
-    const SharedShadowNodeSharedList &children = nullptr
+  virtual UnsharedShadowNode cloneShadowNode(
+    const ShadowNode &sourceShadowNode,
+    const ShadowNodeFragment &fragment
   ) const = 0;
 
   /*
@@ -66,6 +62,26 @@ public:
   virtual void appendChild(
     const SharedShadowNode &parentShadowNode,
     const SharedShadowNode &childShadowNode
+  ) const = 0;
+
+  /*
+   * Creates a new `Props` of a particular type with all values copied from
+   * `props` and `rawProps` applied on top of this.
+   * If `props` is `nullptr`, a default `Props` object (with default values)
+   * will be used.
+   */
+  virtual SharedProps cloneProps(
+    const SharedProps &props,
+    const RawProps &rawProps
+  ) const = 0;
+
+  /*
+   * Creates a new `EventEmitter` object compatible with particular type of
+   * shadow nodes.
+   */
+  virtual SharedEventEmitter createEventEmitter(
+    const EventTarget &eventTarget,
+    const Tag &tag
   ) const = 0;
 };
 
