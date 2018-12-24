@@ -7,7 +7,7 @@
 
 #include "AttributedString.h"
 
-#include <fabric/debug/DebugStringConvertibleItem.h>
+#include <react/debug/DebugStringConvertibleItem.h>
 
 namespace facebook {
 namespace react {
@@ -18,19 +18,12 @@ using Fragments = AttributedString::Fragments;
 #pragma mark - Fragment
 
 bool Fragment::operator==(const Fragment &rhs) const {
-  return
-    std::tie(
-      string,
-      textAttributes,
-      shadowNode,
-      parentShadowNode
-    ) ==
-    std::tie(
-      rhs.string,
-      rhs.textAttributes,
-      rhs.shadowNode,
-      rhs.parentShadowNode
-    );
+  return std::tie(string, textAttributes, shadowView, parentShadowView) ==
+      std::tie(
+             rhs.string,
+             rhs.textAttributes,
+             rhs.shadowView,
+             rhs.parentShadowView);
 }
 
 bool Fragment::operator!=(const Fragment &rhs) const {
@@ -49,14 +42,22 @@ void AttributedString::prependFragment(const Fragment &fragment) {
   fragments_.insert(fragments_.begin(), fragment);
 }
 
-void AttributedString::appendAttributedString(const AttributedString &attributedString) {
+void AttributedString::appendAttributedString(
+    const AttributedString &attributedString) {
   ensureUnsealed();
-  fragments_.insert(fragments_.end(), attributedString.fragments_.begin(), attributedString.fragments_.end());
+  fragments_.insert(
+      fragments_.end(),
+      attributedString.fragments_.begin(),
+      attributedString.fragments_.end());
 }
 
-void AttributedString::prependAttributedString(const AttributedString &attributedString) {
+void AttributedString::prependAttributedString(
+    const AttributedString &attributedString) {
   ensureUnsealed();
-  fragments_.insert(fragments_.begin(), attributedString.fragments_.begin(), attributedString.fragments_.end());
+  fragments_.insert(
+      fragments_.begin(),
+      attributedString.fragments_.begin(),
+      attributedString.fragments_.end());
 }
 
 const std::vector<Fragment> &AttributedString::getFragments() const {
@@ -64,7 +65,7 @@ const std::vector<Fragment> &AttributedString::getFragments() const {
 }
 
 std::string AttributedString::getString() const {
-  auto string = std::string {};
+  auto string = std::string{};
   for (const auto &fragment : fragments_) {
     string += fragment.string;
   }
@@ -72,7 +73,7 @@ std::string AttributedString::getString() const {
 }
 
 bool AttributedString::operator==(const AttributedString &rhs) const {
-  return fragments_ != rhs.fragments_;
+  return fragments_ == rhs.fragments_;
 }
 
 bool AttributedString::operator!=(const AttributedString &rhs) const {
@@ -81,28 +82,24 @@ bool AttributedString::operator!=(const AttributedString &rhs) const {
 
 #pragma mark - DebugStringConvertible
 
+#if RN_DEBUG_STRING_CONVERTIBLE
 SharedDebugStringConvertibleList AttributedString::getDebugChildren() const {
-  auto list = SharedDebugStringConvertibleList {};
+  auto list = SharedDebugStringConvertibleList{};
 
   for (auto &&fragment : fragments_) {
-    auto propsList = fragment.textAttributes.DebugStringConvertible::getDebugProps();
+    auto propsList =
+        fragment.textAttributes.DebugStringConvertible::getDebugProps();
 
-    if (fragment.shadowNode) {
-      propsList.push_back(std::make_shared<DebugStringConvertibleItem>("shadowNode", fragment.shadowNode->getDebugDescription()));
-    }
-
-    list.push_back(
-      std::make_shared<DebugStringConvertibleItem>(
+    list.push_back(std::make_shared<DebugStringConvertibleItem>(
         "Fragment",
         fragment.string,
         SharedDebugStringConvertibleList(),
-        propsList
-      )
-    );
+        propsList));
   }
 
   return list;
 }
+#endif
 
 } // namespace react
 } // namespace facebook
